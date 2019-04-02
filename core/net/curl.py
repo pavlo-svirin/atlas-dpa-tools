@@ -1,17 +1,21 @@
 import pycurl
+from io import BytesIO
 
 class Curl:
     def __init__(self):
-        self.storage = BytesIO()
         self.curl = pycurl.Curl()
         self.curl.setopt(pycurl.SSL_VERIFYPEER, 0)   
         self.curl.setopt(pycurl.SSL_VERIFYHOST, 0)
-        self.curl.setopt(self.curl.WRITEFUNCTION, storage.write)
 
 
     def perform(self, url):
-        curl.setopt(pycurl.URL, url)
-        curl.perform()
-        curl.close()
-        return storage.getvalue().decode('UTF-8')
+        storage = BytesIO()
+        self.curl.setopt(self.curl.WRITEFUNCTION, storage.write)
+        self.curl.setopt(pycurl.URL, url)
+        self.curl.perform()
+        contents = storage.getvalue().decode('UTF-8')
+        storage.close()
+        return contents
 
+    def close(self):
+        self.curl.close()
